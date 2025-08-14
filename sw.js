@@ -1,20 +1,21 @@
-const CACHE = 'steve-muscle-cache-v2';
-const ASSETS = ['/', '/index.html', '/manifest.webmanifest'];
-
-self.addEventListener('install', (e)=>{
-  e.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)));
-});
-self.addEventListener('activate', (e)=>{
-  e.waitUntil(
-    caches.keys().then(keys => Promise.all(keys.map(k => k !== CACHE && caches.delete(k))))
+self.addEventListener("install", event => {
+  event.waitUntil(
+    caches.open("app-cache").then(cache => {
+      return cache.addAll([
+        "./",
+        "./index.html",
+        "./manifest.webmanifest",
+        "./icons/icon-192.png",
+        "./icons/icon-512.png"
+      ]);
+    })
   );
 });
-self.addEventListener('fetch', (e)=>{
-  e.respondWith(
-    caches.match(e.request).then(resp => resp || fetch(e.request).then(net => {
-      const copy = net.clone();
-      caches.open(CACHE).then(cache => cache.put(e.request, copy)).catch(()=>{});
-      return net;
-    }).catch(()=>resp))
+
+self.addEventListener("fetch", event => {
+  event.respondWith(
+    caches.match(event.request).then(response => {
+      return response || fetch(event.request);
+    })
   );
 });
