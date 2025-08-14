@@ -10,10 +10,10 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
 
-  <!-- UI lib -->
+  <!-- Tailwind for styling -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- React + ReactDOM (UMD) and Babel for in-browser JSX transform -->
+  <!-- React (UMD) + ReactDOM + Babel (for JSX in browser) -->
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js" crossorigin></script>
@@ -37,14 +37,13 @@
     }
   </script>
 
-  <!-- Your React app (JSX compiled by Babel in the browser) -->
+  <!-- YOUR APP CODE MUST BE INSIDE THIS BABEL SCRIPT -->
   <script type="text/babel" data-presets="env,react">
     const {useEffect,useMemo,useState} = React;
     const STORAGE_KEY = "steve_muscle_app_v1";
     const todayISO = () => new Date().toISOString().slice(0,10);
     const cls = (...a)=>a.filter(Boolean).join(" ");
 
-    // ==== Weekly Plan (45–60 min/day) ====
     const WEEK_PLAN=[
       { title:"Lower Body (Leg Focus)", blocks:[
         {name:"Back Squat",sets:"4×8–10"}, {name:"Walking Lunges",sets:"3×12/leg"},
@@ -68,7 +67,6 @@
       { title:"Rest / Recovery", blocks:[], cardio:null },
     ];
 
-    // ==== Cheap high-protein template (UAE) ====
     const MEAL_TEMPLATE=[
       {name:"Breakfast: 4 eggs, 2 slices bread, banana, milk/laban"},
       {name:"Snack: Peanut butter + 3–4 dates"},
@@ -84,8 +82,8 @@
       {name:"Rule 1 Mass Gainer (post-workout – rest days between meals)"},
     ];
 
-    function loadState(){try{const raw=localStorage.getItem(STORAGE_KEY);return raw?JSON.parse(raw):null;}catch{return null}}
-    function saveState(s){localStorage.setItem(STORAGE_KEY, JSON.stringify(s))}
+    function loadState(){try{const raw=localStorage.getItem("steve_muscle_app_v1");return raw?JSON.parse(raw):null;}catch{return null}}
+    function saveState(s){localStorage.setItem("steve_muscle_app_v1", JSON.stringify(s))}
     const defaultState={checks:{},metrics:[],settings:{usesMilkInGainer:false,units:"metric"}};
 
     const Pill=({active,children,onClick})=> (
@@ -143,9 +141,7 @@
               <Input label="Right calf (cm)" type="number" value={form.rightCalf} onChange={v=>setForm(f=>({...f,rightCalf:v}))} />
               <Input label="Notes" value={form.notes} onChange={v=>setForm(f=>({...f,notes:v}))} />
             </div>
-            <div>
-              <button onClick={()=>onAdd(form)} className="px-4 py-2 rounded-xl bg-indigo-600 text-white">Save Entry</button>
-            </div>
+            <div><button onClick={()=>onAdd(form)} className="px-4 py-2 rounded-xl bg-indigo-600 text-white">Save Entry</button></div>
             <div>
               <h4 className="font-semibold mb-2">History</h4>
               <div className="bg-neutral-900/60 rounded-2xl divide-y divide-white/5">
@@ -310,30 +306,6 @@
 
     const root = ReactDOM.createRoot(document.getElementById("root"));
     root.render(<App />);
-
-    // Simple smoke tests (optional)
-    function runSmokeTests(){
-      const results=[];
-      try{
-        const header=document.querySelector('h1');
-        results.push({name:'header renders', pass: !!header && header.textContent.includes("Steve’s Muscle Gain")});
-        const topnav=document.getElementById('topnav');
-        const pills=topnav? topnav.querySelectorAll('button'): [];
-        results.push({name:'top nav has 6 pills', pass: pills.length===6});
-        if(pills.length>=2){ pills[1].click(); }
-        const h3=document.querySelector('h3');
-        results.push({name:'workouts section renders', pass: !!h3 && h3.textContent.startsWith('Workouts –')});
-      }catch(e){ results.push({name:'exception', pass:false, error:e.message}); }
-      const allPass=results.every(r=>r.pass);
-      if(!allPass){
-        const err=document.getElementById('err');
-        if(err){
-          err.style.display='block';
-          err.textContent='Self-tests failed:\\n'+results.map(r=>`${r.name}: ${r.pass?'OK':'FAIL'+(r.error?` (${r.error})`:'' )}`).join('\\n');
-        }
-      }
-    }
-    window.addEventListener('load',()=> setTimeout(runSmokeTests, 100));
   </script>
 </body>
 </html>
