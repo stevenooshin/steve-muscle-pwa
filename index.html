@@ -1,4 +1,18 @@
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 import React, { useEffect, useMemo, useState } from "react";
+
+
+
+<script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js");
+  }
+</script>
+
+
+
+
 
 /**
  * SteveGain – Final React Component
@@ -547,3 +561,4 @@ export default function App() {
     </div>
   );
 }
+
